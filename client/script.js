@@ -87,7 +87,7 @@ const handleSubmit = async (e) => {
 
   // fetch data from server -> bot's response
 
-  const response = await fetch('http://localhost:5001', {
+  const response = await fetch('https://solver.onrender.com/', {
     method: 'POST',
     header: {
       'Content-Type': 'application/json'
