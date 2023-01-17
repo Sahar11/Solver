@@ -4,16 +4,18 @@ import user from './assets/user.svg';
 const form = document.querySelector('form');
 const chatContainer = document.querySelector('#chat_container');
 
-let loadInterval;
+let loadInterval
 
 // loading dots when AI is getting information
 function loader(element) {
-  // Update the text content of the loading indicator
-  element.textContent = '';
+  
+  element.textContent = ''
 
   loadInterval = setInterval(() => {
-      // If the loading indicator has reached three dots, reset it
+    // Update the text content of the loading indicator
     element.textContent += '.';
+
+    // If the loading indicator has reached three dots, reset it
     if(element.textContent === '....') {
       element.textContent = '';
     }
@@ -53,11 +55,11 @@ function chatStripe(isAi, value, uniqueId) {
     <div class="wrapper ${isAi && 'ai'}">
     <div class="chat">
     <div class="profile">
-    <img src="${isAi ? bot : user} "
+    <img src=${isAi ? bot : user}
     alt="${isAi ? 'bot' : 'user'}"
     />
     </div>
-    <div class="message" id=${uniqueId}> ${value}></div>
+    <div class="message" id=${uniqueId}> ${value}</div>
     </div>
     </div>
     `
@@ -65,39 +67,41 @@ function chatStripe(isAi, value, uniqueId) {
 }
 
 const handleSubmit = async (e) => {
-  e.preventDefault();
-  const data = new FormData(form);
+  e.preventDefault()
 
-  //user's chatStripe
-  chatContainer.innerHTML += chatStripe(false, data.get('prompt'));
- // to clear the textarea input
-  form.reset();
+  const data = new FormData(form)
 
-  //bot's chatStripe
-  const uniqueId = generateUniqueId();
-  chatContainer.innerHTML += chatStripe(true, " ", uniqueId);
-  // to focus scroll to the bottom
+  // user's chatstripe
+  chatContainer.innerHTML += chatStripe(false, data.get('prompt'))
+
+  // to clear the textarea input 
+  form.reset()
+
+  // bot's chatstripe
+  const uniqueId = generateUniqueId()
+  chatContainer.innerHTML += chatStripe(true, " ", uniqueId)
+
+  // to focus scroll to the bottom 
   chatContainer.scrollTop = chatContainer.scrollHeight;
-  
-  //put specific message in div
 
-  const messageDiv = document.getElementById(uniqueId);
+  // specific message div 
+  const messageDiv = document.getElementById(uniqueId)
 
-  loader(messageDiv);
+  // messageDiv.innerHTML = "..."
+  loader(messageDiv)
 
-  // fetch data from server -> bot's response
-
-  const response = await fetch('https://solver.onrender.com/', {
-    method: 'POST',
-    header: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      prompt: data.get('prompt')
-    })
+  const response = await fetch('http://localhost:5001/', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+          prompt: data.get('prompt')
+      })
   })
+  
   clearInterval(loadInterval);
-  messageDiv.innerHTML = '';
+  messageDiv.innerHTML = " "
 
   if(response.ok) {
     const data = await response.json();
